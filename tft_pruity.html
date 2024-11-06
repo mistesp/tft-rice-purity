@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Rice Purity Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #questionList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #questionList li {
+            margin-bottom: 10px;
+        }
+        .question-number {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TFT Rice Purity Test</h1>
+        <div id="test">
+            <ul id="questionList"></ul>
+            <button onclick="calculateScore()">Calculate Score</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            "Have you played tft?",
+            "Have you played tft longer than 3 years?",
+            "Have you played tft in more than 5 distinct sets (not including midsets, i.e 5.5)?",
+            "Have you ever spent real money on TFT?",
+            "Have you ever bought the TFT Battlepass?",
+            "Do you own a chibi skin?",
+            "Do you own Chibi Dragonmancer Yasuo?",
+            "\"Premium\" Boom?",
+            "\"Premium\" Board?",
+            "Have you hit Diamond in TFT?",
+            "Have you hit Masters in TFT?",
+            "Have you hit Grandmaster in TFT?",
+            "Have you hit Challenger in TFT?",
+            "Have you ever been stuck in a rank for more than 6 months?",
+            "Have you ever been stuck in a rank for more than a year?",
+            "Check this box if that rank was Silver - Emerald",
+            "Do you also play league?",
+            "Have you ever played TFT Mobile?",
+            "Have you ever played TFT every single day for a week?",
+            "Have you ever played TFT every single day for a month?",
+            "Have you ever played TFT for more than 5 hours straight?",
+            "Have you ever rage quit and ffed a game?",
+            "Have you ever screamed at your monitor while playing tft?",
+            "Have you ever complained to Mortdog during the game?",
+            "Have you ever been muted for spamming pings?",
+            "Have you ever sent a toxic message in chat?",
+            "Have you ever lost a friendship because of TFT?",
+            "Have you met someone on TFT who you would consider a legitimate threat to society?",
+            "Have you ever broken something out of rage while playing TFT?",
+            "Have you ever publicly shamed someone for their gameplay?",
+            "Have you ever cyberbullied someone on TFT?",
+            "Have you ever sent a death threat to someone over a game?",
+            "Have you ever received a death threat over a game? (STOP HOLDING MY UNITS)",
+            "Have you ever neglected personal hygiene to play TFT?",
+            "Have you ever skipped school or work to play TFT?",
+            "Have you ever missed a major life event (wedding, funeral, etc.) to play tft?",
+            "Have you ever played while drunk?",
+            "Have you ever played while high?",
+            "Have you ever played while on a drug harder than marijuana?",
+            "Have you ever let TFT negatively affect your mental or physical health?",
+            "Do you play TFT to relieve stress only to get more stressed?",
+            "Have you ever got into physical conflict because of TFT?",
+            "Have you ever flirted with someone in-game?",
+            "Have you ever had a sexual fantasy about a unit/tactician in TFT?",
+            "Have you ever created/seen inappropriate fan art?",
+            "Have you ever got on Reddit/Twitter for the sole purpose of viewing such fan art?",
+            "Have you ever…you know…to an unit/tactician?",
+            "Have you ever…you know… to a TFT streamer?",
+            "Have you ever…you know… to unit/tactician more than 10 times?",
+            "Check this box if it was k3soju, shurkou, ahri, zoe, seraphine, katarina",
+            "Have you ever been caught… you know… to an unit/tactician/streamer?",
+            "Do you know who kentwuhoo is?",
+            "Do you know which country comes up with the \"secret ___ tech?\"",
+            "Have you ever played tft naked?",
+            "Have you ever deleted another game to make space for tft/league?",
+            "Have you ever held units so your opponent couldn't hit them?",
+            "Click this box if they started pinging you",
+            "Have you ever hit a 3-star 4 cost?",
+            "Have you ever hit a 3-star 5+ cost?",
+            "Have you ever hit a 10+ vertical trait?",
+            "Have you ever had 3+ emblems for the same trait?",
+            "Have you ever thrown the game by accidentally selling a unit you needed?",
+            "Have you tried to lock shop before then accidentally didnt?",
+            "Have you ever rerolled your augments into something absolutely terrible and threw the game instead of playing the \"safer\" option?",
+            "Have you ever rolled to 0 to try and hit a unit/3star, just to not hit them, and go bot 4?",
+            "Have you ever bmed someone by removing your carry off the board on purpose?",
+            "Have you ever rolled 50+ gold at level 8 for a 4 cost then didnt hit?",
+            "Have you ever gotten \"tilted\" from this and played terribly?",
+            "Have you ever tilt-queued just to lose more elo because you're playing tilted?",
+            "Have you ever died before raptors?",
+            "Have you ever lost to Krugs?",
+            "Have you ever lost to wolves, raptors, or any encounter stage 5+ (not encluding crab rave)",
+            "Have you ever died to crab rave?",
+            "Have you ever beaten crab rave?",
+            "Have you tried dodging a zephyr just to position directly into it?",
+            "Do you always take Golden Egg/What the Forge for the content?",
+            "Have you ever smurfed in TFT?",
+            "Have you ever directly contested a person due to an action they'd done previously in the game?",
+            "Have you ever hard forced a \"meta\" comp every single game",
+            "Click this if it was set 12 syndra, set 9 akshan, set 7 ezreal, set 6 yordles, set 4 warweek, set 5 leblanc, set 6 socialite kaisa gambling, set 6.5 sivir irelia, frejliord zeri or set 2 nocturne?",
+            "have you ever taken something from carousel you didnt need just to screw over another player?",
+            "Have you ever winstreaked then complained you didnt get the component you want on carousel?",
+            "Have you ever loss-streaked and gotten your component/item taken from someone who was young, wild and free?",
+            "Do you always take pandoras items/bench?",
+            "Do you always play econ traits (fortune, piltover, sugarcraft) whenever you can?",
+            "Have you ever had a guarenteed first until someone hit a 3 star 4+ cost, or \"chase\" vertical traits (i.e 10 portal, 10 eldritch, 12 jade, 9 guardians, 6 dragons, etc)",
+            "Have you ever used a stats tool (Metatft, tactics.tools, TFTactics, etc..)",
+            "Have you ever been in a perfect spot for a comp, just for someone to pivot into you and hit everything?",
+            "Has Mortdog ever blessed you with a level 7 5-cost you needed for your comp?",
+            "Have you ever had +3 or more team size (excluding Endless Horde/Cursed Crown)?",
+            "Have you ever sniped a game with a live TFT streamer.",
+            "Click this box if you've ever griefed their game while stream sniping",
+            "Have you ever called TFT a shit game, just to continue to play it?",
+            "Have you ever watched the entirety of a Mortdog patch rundown?",
+            "Click this box if you listen to keshi/joji while playing TFT.",
+            "Have you ever lived at 1 hp and won the game from there? (excluding final reserves, last stand, desperate plea)",
+            "If you are stuck in Iron are you okay in the head?",
+            "have you ever needed one specific component and never gotten it the entire game?",
+            "Are you mentally unstable?",
+            "Was set 9 your favourite set of all time?"
+        ];
+
+        function setupQuestions() {
+            const questionList = document.getElementById('questionList');
+            questions.forEach((q, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <input type="checkbox" id="q${index}" name="q${index}">
+                    <label for="q${index}"><span class="question-number">${index + 1}.</span> ${q}</label>
+                `;
+                questionList.appendChild(li);
+            });
+        }
+
+        function calculateScore() {
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const total = questions.length;
+            const score = Math.round((1 - checked / total) * 100);
+            
+            document.getElementById('result').innerText = `Your TFT purity score: ${score}`;
+        }
+
+        // Setup questions when the page loads
+        window.onload = setupQuestions;
+    </script>
+</body>
+</html>
